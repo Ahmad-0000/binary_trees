@@ -1,76 +1,45 @@
-#include <stdio.h>
 #include "binary_trees.h"
-
-const binary_tree_t *get_right_uncle(const binary_tree_t *);
-const binary_tree_t *get_left_of_level(const binary_tree_t *);
+#include <stdio.h>
 
 void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
 {
-    const binary_tree_t *right_uncle;
-    const binary_tree_t *most_left;
+    const binary_tree_t *roots_queue[100];
+    const binary_tree_t *children_queue[200];
+    int roots_rear, children_rear, roots_front, children_front;
 
+    roots_rear = children_rear = -1;
+    roots_front = children_front = 0;
     if (tree == NULL || func == NULL)
-      return;
-    func(tree->n);
-    right_uncle = get_right_uncle(tree);
-    most_left = get_left_of_level(tree);
-    if (tree->parent && tree->parent->right && tree->parent->right != tree)
-      binary_tree_levelorder(tree->parent->right, func);
-    else if (right_uncle)
-        binary_tree_levelorder(right_uncle->left ? right_uncle->left : right_uncle->right, func);
-    else if ((most_left) && (most_left->left || most_left->right))
-        binary_tree_levelorder(most_left->left ? most_left->left : most_left->right, func);
-    else
+        return;
+    roots_rear++;
+    roots_queue[roots_rear] = tree;
+    while (roots_front <= roots_rear)
     {
-        if (most_left->parent && most_left->parent->right && most_left->parent->right != tree)
+        func(roots_queue[roots_front]->n);
+        if (roots_queue[roots_front]->left)
         {
-            binary_tree_levelorder(most_left->parent->right->left ? most_left->parent->right->left : most_left->parent->right->right, func);
+            children_rear++;
+            children_queue[children_rear] = roots_queue[roots_front]->left;
+        }
+        if (roots_queue[roots_front]->right)
+        {
+            children_rear++;
+            children_queue[children_rear] = roots_queue[roots_front]->right;
+        }
+        roots_front++;
+        if (roots_front > roots_rear && children_rear != -1)
+        {
+            roots_rear = -1;
+            roots_front = 0;
+            while (children_front <= children_rear && children_front < 100)
+            {
+                roots_queue[children_front] = children_queue[children_front];
+                children_front++;
+            }
+            roots_rear = children_front - 1;
+            roots_front = 0;
+            children_front = 0;
+            children_rear = -1;
         }
     }
-
-}
-
-const binary_tree_t *get_right_uncle(const binary_tree_t *tree)
-{
-    if (tree == NULL || tree->parent == NULL || tree->parent->parent == NULL)
-      return NULL;
-    if (tree->parent->parent->right == tree->parent)
-      return NULL;
-    return tree->parent->parent->right;
-}
-
-const binary_tree_t *get_left_of_level(const binary_tree_t *node)
-{
-    if (node == NULL)
-        return NULL;
-    if (node->parent == NULL)
-        return node;
-    while (node->parent->left)
-    {
-        if (node->parent->left != node)
-        {
-            node = node->parent->left;
-        }
-        else if (node->parent->parent)
-        {
-            if (node->parent->parent->left && node->parent->parent->left != node->parent)
-            {
-                if (node->parent->parent->left->left)
-                    node = node->parent->parent->left->left;
-                else if (node->parent->parent->left->right)
-                    node = node->parent->parent->left->right;
-                else
-                    break;
-            }
-            else
-            {
-                break;
-            }
-        }
-        else
-        {
-            break;
-        }
-    }
-    return node;
 }
