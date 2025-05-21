@@ -28,7 +28,7 @@ int binary_tree_is_complete(const binary_tree_t *tree)
           roots_front++;
           if (roots_front > roots_rear)
           {
-              if (roots_front != power(2, level++))
+              if (roots_front != power(2, level++) && children_rear != -1)
                   for (roots_front = 0, null_to_left = FALSE; roots_front <= roots_rear; roots_front++)
                   {
                       if (roots[roots_front] == NULL)
@@ -36,6 +36,8 @@ int binary_tree_is_complete(const binary_tree_t *tree)
                       else if (roots[roots_front] && null_to_left)
                           return FALSE;
                   }
+              else
+                  return FALSE;
               while (children_front <= children_rear && children_front < 100)
               {
                   roots[children_front] = children[children_front];
