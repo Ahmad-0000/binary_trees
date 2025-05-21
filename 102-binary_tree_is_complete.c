@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "binary_trees.h"
 #define TRUE 1
 #define FALSE 0
