@@ -6,9 +6,9 @@ bst_t *bst_search(const bst_t *tree, int value)
         return NULL;
     while (tree)
     {
-        if (value == tree->value)
-            return tree;
-        else if (value < tree->value)
+        if (value == tree->n)
+            return (bst_t *)tree;
+        else if (value < tree->n)
             tree = tree->left;
         else
             tree = tree->right;
