@@ -10,7 +10,7 @@ bst_t *bst_search(const bst_t *tree, int value)
             return tree;
         else if (value < tree->value)
             tree = tree->left;
-        else (value > tree->value)
+        else
             tree = tree->right;
     }
     return NULL;
